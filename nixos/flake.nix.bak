@@ -1,0 +1,49 @@
+{
+    description = "NixOS on VMWare";
+
+    inputs = {
+        nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+        chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+        hyprland.url = "github:hyprwm/Hyprland";
+        home-manager = {
+            url = "github:nix-community/home-manager";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
+    };
+
+    outputs = { self, nixpkgs, home-manager, chaotic, hyprland, ... }@inputs:{
+        nixosConfigurations.nixos-vm = nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            specialArgs = { inherit inputs; };
+            modules = [
+                ./hardware-configuration.nix
+                ./configuration.nix
+                ./vmware.nix
+                chaotic.nixosModules.default
+
+                home-manager.nixosModules.home-manager {
+                    home-manager = {
+                        useGlobalPkgs = true;
+                        useUserPackages = true;
+                        users.will = import ./home.nix;
+                        backupFileExtension = "backup";
+                    };
+                }
+            ];
+        };
+    homeConfigurations."will@nixos" = home-manager.lib.homeManagerConfiguration {
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+
+      modules = [
+        {
+          wayland.windowManager.hyprland = {
+            enable = true;
+            # set the flake package
+            package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+            portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+          };
+        }
+        ];
+    };
+    };
+}

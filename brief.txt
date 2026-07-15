@@ -1,0 +1,14 @@
+I need to create a bunch of NixOS configs for a gaming PC setup. This should
+eventually be extensible to a gaming laptop, a productivity-focused macbook,
+etc. I eventually want to manage all my dotfiles and configs with home manager
+as well.
+
+I am new to NixOS so I want to start with something that won't break and will
+allow me to tinker with dotfiles on the fly first, then when I get them right
+slowly add them to home manager.
+
+Right now, I plan to install NixOS in the 100GB of free space on my disk that
+already has a Windows installation on it. There is a separate, empty 500GB SSD
+that I plan to install games to. 
+
+I have already written some nixOS files as can be seen in the subdirectories.

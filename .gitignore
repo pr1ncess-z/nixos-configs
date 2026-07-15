@@ -1,0 +1,16 @@
+# Vim undo/swap/backup files
+*.un~
+*.swp
+*.swo
+*~
+\#*\#
+.\#*
+
+# Nix build artifacts
+result
+result-*
+
+# Editor directories
+.idea/
+.vscode/
+*.DS_Store
