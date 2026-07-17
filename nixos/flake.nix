@@ -1,12 +1,11 @@
 {
-  description = "NixOS pr1ncess";
+  description = "NixOS for pr1ncess";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
-    
-    
+
     cachyos-settings = {
     	url = "github:Daaboulex/cachyos-settings-nix";
     	inputs.nixpkgs.follows = "nixpkgs";
@@ -15,10 +14,6 @@
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    hyprland = {
-      url = "github:hyprwm/Hyprland";
     };
   };
 
@@ -44,19 +39,15 @@
 
               boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-x86_64-v4;
 
-
-              # ... your other configs
             }
-          )
+        )
 
         ./hardware-configuration.nix
         ./gaming.nix
         ./configuration.nix
-        
+
         chaotic.nixosModules.default
         inputs.cachyos-settings.nixosModules.default
-        
-          
 
         home-manager.nixosModules.home-manager
         {

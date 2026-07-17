@@ -1,19 +1,13 @@
-# Edit this configuration file to define what should be installed on
-# your system. Help is available in the configuration.nix(5) man page, on
-# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
-
 { config, lib, inputs, pkgs, ... }:
 
 {
-  # NVIDIA driver, Steam, and other unfree packages required by this config.
   nixpkgs.config.allowUnfree = true;
 
   imports =
-    [ 
+    [
       ./hardware-configuration.nix
     ];
 
-  # Use the GRUB 2 boot loader.
   boot.loader = {
       efi = {
           canTouchEfiVariables = true;
@@ -21,20 +15,16 @@
       };
       grub = {
           enable = true;
-					devices = [ "nodev" ];
-     		  efiSupport = true;
-     		  useOSProber = true;  # detects Windows
+          devices = [ "nodev" ];
+          efiSupport = true;
+          useOSProber = true;  # detects Windows
       };
   };
-  # Define on which hard drive you want to install Grub.
-  # boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
 
-  networking.hostName = "nixos-durian"; # Define your hostname.
-
-  # Configure network connections interactively with nmcli or nmtui.
+  networking.hostName = "nixos-durian";
   networking.networkmanager.enable = true;
+  networking.firewall.enable = true;
 
-  # Set your time zone.
   time.timeZone = "America/New_York";
 
   hardware = {
@@ -45,46 +35,22 @@
     };
   };
 
-  # Enable the X11 windowing system.
-  services.displayManager.ly.enable = true;
-  services.xserver = {
-      enable = true;
-      videoDrivers = [ "nvidia" ];
-  };
-
-  # Enable CUPS to print documents.
-  # services.printing.enable = true;
-
-  # Enable sound.
-  # services.pulseaudio.enable = true;
-  # OR
-  # services.pipewire = {
-  #   enable = true;
-  #   pulse.enable = true;
-  # };
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  # Don't forget to set a password with ‘passwd’.
   users.users.will = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" ];
   };
 
   cachyos.settings = {
     enable = true;
-    # All sub-options default to true except GPU-specific ones:
-    nvidia.enable = true;        # Uncomment for NVIDIA GPUs
-    # amdgpuGcnCompat.enable = true; # Uncomment for older AMD GCN GPUs
+    nvidia.enable = true;
   };
 
   programs.hyprland = {
     enable = true;
     withUWSM = true;
     xwayland.enable = true;
-    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-    portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
   };
-  # NOTE: `wayland.windowManager.hyprland.systemd.enable` is a home-manager option,
-  # moved to home.nix (invalid at system scope).
   programs.uwsm = {
     enable = true;
     waylandCompositors = {
@@ -100,11 +66,28 @@
       };
     };
   };
+  programs.mtr.enable = true;
+  programs.gnupg.agent = {
+    enable = true;
+    enableSSHSupport = true;
+  };
 
-  # List packages installed in system profile.
-  # You can use https://search.nixos.org/ to find more packages (and options).
   environment.systemPackages = with pkgs; [
+    kitty # required for default Hyprland config
   ];
+
+  services.displayManager.ly.enable = true;
+  services.xserver = {
+      videoDrivers = [ "nvidia" ];
+  };
+  services.openssh.enable = true;
+  services.printing.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+  };
 
   security.polkit.enable = true;
 
@@ -121,11 +104,12 @@
   ];
 
   nix.settings = {
+    experimental-features = [ "nix-command" "flakes" ];
     substituters = [
-      "https://cache.nixos.org"           # default NixOS cache
-      "https://hyprland.cachix.org"       # Hyprland pre-built binaries
+      "https://cache.nixos.org"
+      "https://hyprland.cachix.org"
     ];
-    trusted-substituters = [              # idk the difference b/w substituters, trusted
+    trusted-substituters = [  # idk the difference b/w substituters and trusted so enabling both
       "https://cache.nixos.org"
       "https://hyprland.cachix.org"
     ];
@@ -135,29 +119,7 @@
     ];
     trusted-users = ["root" "@wheel"];
   };
- 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  programs.mtr.enable = true;
-  programs.gnupg.agent = {
-    enable = true;
-    enableSSHSupport = true;
-  };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
-  # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
-  system.stateVersion = "26.05"; # Did you read the comment?
+  system.stateVersion = "26.05";
 }
 

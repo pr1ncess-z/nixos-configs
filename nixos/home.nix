@@ -10,6 +10,7 @@
     wget
     grim
     slurp
+    cups-pdf-to-pdf
   ];
 
   programs = {
@@ -20,9 +21,6 @@
       enable = true;
     };
     neovim = {
-      enable = true;
-    };
-    kitty = { # needed for default hyprland config
       enable = true;
     };
     alacritty = {
@@ -44,11 +42,6 @@
       enable = true;
     };
   };
-
-  wayland.windowManager.hyprland.enable = true;
-  wayland.windowManager.hyprland.systemd.enable = false;
-  # hint Electron apps to use Wayland:
-  home.sessionVariables.NIXOS_OZONE_WL = "1";
 
   services = {
     hyprpaper = {
