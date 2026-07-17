@@ -19,7 +19,7 @@
 
   outputs = { self, nixpkgs, home-manager, chaotic, nix-cachyos-kernel, ... }@inputs:
   {
-    nixosConfigurations.nixos-vm = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.nixos-durian = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit inputs; }; # This passes `inputs` to configuration.nix
       modules = [
