@@ -1,8 +1,6 @@
-{ config, pkgs, inputs, ... }:
+{ pkgs, ... }:
 
 {
-  home.username = "will";
-  home.homeDirectory = "/home/will";
   home.stateVersion = "26.05";
 
   home.packages = with pkgs; [
@@ -14,6 +12,9 @@
   ];
 
   programs = {
+    home-manager = {
+      enable = true;
+    };
     zsh = {
       enable = true;
     };

@@ -42,9 +42,10 @@
             }
         )
 
-        ./hardware-configuration.nix
-        ./gaming.nix
-        ./configuration.nix
+        ./hosts/durian/hardware-configuration.nix
+        ./modules/gaming.nix
+        ./hosts/durian/configuration.nix
+        ./users/will/nixos.nix
 
         chaotic.nixosModules.default
         inputs.cachyos-settings.nixosModules.default
@@ -54,7 +55,7 @@
           home-manager = {
             useGlobalPkgs = true;
             useUserPackages = true;
-            users.will = import ./home.nix;
+            users.will = import ./users/will/home.nix;
             backupFileExtension = "backup";
             extraSpecialArgs = { inherit inputs; };
           };
