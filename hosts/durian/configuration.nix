@@ -27,6 +27,12 @@
 
   time.timeZone = "America/New_York";
 
+  swapDevices = [{
+    device = "/var/lib/swapfile";
+    size = 8*1024;
+  }]; 
+  zramSwap.enable = true;
+
   hardware = {
     graphics.enable = true;
     nvidia = {
