@@ -5,6 +5,9 @@
 { config, lib, inputs, pkgs, ... }:
 
 {
+  # NVIDIA driver, Steam, and other unfree packages required by this config.
+  nixpkgs.config.allowUnfree = true;
+
   imports =
     [ 
       ./hardware-configuration.nix
@@ -34,12 +37,10 @@
   # Set your time zone.
   time.timeZone = "America/New_York";
 
-  hardware.graphics.enable = true;
-  hardware.nvidia.open = true;
   hardware = {
     graphics.enable = true;
     nvidia = {
-      package = nvidia_cachyos;
+      package = pkgs.nvidia_cachyos;
       open = true;
     };
   };
@@ -78,12 +79,12 @@
   programs.hyprland = {
     enable = true;
     withUWSM = true;
-    nvidiaPatches = true;
     xwayland.enable = true;
     package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
     portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
   };
-  wayland.windowManager.hyprland.systemd.enable = false;
+  # NOTE: `wayland.windowManager.hyprland.systemd.enable` is a home-manager option,
+  # moved to home.nix (invalid at system scope).
   programs.uwsm = {
     enable = true;
     waylandCompositors = {
@@ -110,7 +111,7 @@
   fonts.packages = with pkgs; [
     nerd-fonts.blex-mono
     nerd-fonts.geist-mono
-    nerds-fonts.fira-code
+    nerd-fonts.fira-code
     noto-fonts
     noto-fonts-cjk-sans
     noto-fonts-color-emoji

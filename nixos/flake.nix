@@ -4,24 +4,51 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
+    
     
     cachyos-settings = {
     	url = "github:Daaboulex/cachyos-settings-nix";
     	inputs.nixpkgs.follows = "nixpkgs";
-    }
+    };
 
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    hyprland = {
+      url = "github:hyprwm/Hyprland";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, chaotic, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, chaotic, nix-cachyos-kernel, ... }@inputs:
   {
     nixosConfigurations.nixos-vm = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit inputs; }; # This passes `inputs` to configuration.nix
       modules = [
+        (
+          { pkgs, ... }:
+            {
+              nixpkgs.overlays = [
+                # Use the exact nixpkgs revision as defined in this repo to ensure binary cache hits.
+                nix-cachyos-kernel.overlays.pinned
+
+                # Alternatively, use nixpkgs from your environment, nixpkgs.config will apply.
+                # Note: may not hit binary cache; kernel will need to be built locally.
+                # nix-cachyos-kernel.overlays.default
+
+                # Only use one of the two overlays!
+              ];
+
+              boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-x86_64-v4;
+
+
+              # ... your other configs
+            }
+          )
+
         ./hardware-configuration.nix
         ./gaming.nix
         ./configuration.nix
@@ -29,6 +56,8 @@
         chaotic.nixosModules.default
         inputs.cachyos-settings.nixosModules.default
         
+          
+
         home-manager.nixosModules.home-manager
         {
           home-manager = {
@@ -49,6 +78,7 @@
       "https://nix-community.cachix.org"
       "https://yazi.cachix.org"
 	    "https://hyprland.cachix.org"
+      "https://attic.xuyh0120.win/lantian"
     ];
     extra-trusted-public-keys = [
       "nyx-cache.chaotic.cx:dJxTrgMC3V3cFfyIiBQDQorG6k1LsqurH/srpMSq7qk="
@@ -56,6 +86,7 @@
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "yazi.cachix.org-1:Dcdz63NZKfvUCbDGngQDAZq6kOroIrFoyO064uvLh8k="
 	    "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+      "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc="
     ];
   };
 }
