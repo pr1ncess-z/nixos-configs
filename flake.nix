@@ -36,15 +36,12 @@
 
                 # Only use one of the two overlays!
               ];
-
-              boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-x86_64-v4;
-
             }
         )
 
+        ./hosts/durian/configuration.nix
         ./hosts/durian/hardware-configuration.nix
         ./modules/gaming.nix
-        ./hosts/durian/configuration.nix
         ./users/will/nixos.nix
 
         chaotic.nixosModules.default

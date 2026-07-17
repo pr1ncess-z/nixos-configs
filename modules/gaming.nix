@@ -1,10 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  # ── CachyOS Kernel (from Chaotic Nyx) ──
-  # boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-x86_64-v4;
-    # pkgs.linuxPackages_cachyos.cachyOverride { cachyVars =  };
-    # linuxPackages_cachyos.kernel.cachyConfig.cachyVars // { "_processor_opt" = "GENERIC_V4"; }; };
+  boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-x86_64-v4;
 
   # ── sched-ext BPF scheduler ──
   services.scx.enable = true;
