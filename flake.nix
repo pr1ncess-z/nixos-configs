@@ -19,7 +19,7 @@
 
   outputs = { self, nixpkgs, home-manager, chaotic, nix-cachyos-kernel, ... }@inputs:
   {
-    nixosConfigurations.nixos-vm = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.nixos-durian = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit inputs; }; # This passes `inputs` to configuration.nix
       modules = [
@@ -42,9 +42,10 @@
             }
         )
 
-        ./hardware-configuration.nix
-        ./gaming.nix
-        ./configuration.nix
+        ./hosts/durian/hardware-configuration.nix
+        ./modules/gaming.nix
+        ./hosts/durian/configuration.nix
+        ./users/will/nixos.nix
 
         chaotic.nixosModules.default
         inputs.cachyos-settings.nixosModules.default
@@ -54,7 +55,7 @@
           home-manager = {
             useGlobalPkgs = true;
             useUserPackages = true;
-            users.will = import ./home.nix;
+            users.will = import ./users/will/home.nix;
             backupFileExtension = "backup";
             extraSpecialArgs = { inherit inputs; };
           };

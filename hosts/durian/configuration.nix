@@ -35,12 +35,6 @@
     };
   };
 
-  # Don't forget to set a password with ‘passwd’.
-  users.users.will = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" ];
-  };
-
   cachyos.settings = {
     enable = true;
     nvidia.enable = true;
