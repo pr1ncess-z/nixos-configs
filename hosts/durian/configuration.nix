@@ -78,7 +78,10 @@
 
   services.displayManager.ly.enable = true;
   services.xserver = {
-      videoDrivers = [ "nvidia" ];
+      videoDrivers = [ 
+        "modesetting"
+        "nvidia" 
+      ];
   };
   services.openssh.enable = true;
   services.printing.enable = true;
