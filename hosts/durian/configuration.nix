@@ -18,7 +18,7 @@
           enable = true;
           devices = [ "nodev" ];
           efiSupport = true;
-          useOSProber = true;  # detects Windows
+          # useOSProber = true;  # detects Windows but slow on every rebuild
           extraEntries = ''
             menuentry "Windows" {
               insmod part_gpt
@@ -57,6 +57,13 @@
     nvidia.enable = true;
   };
 
+  programs.vim = {
+    enable = true;
+    defaultEditor = true;  
+  };
+  programs.git = {
+    enable = true;
+  };
   programs.hyprland = {
     enable = true;
     withUWSM = true;
@@ -77,15 +84,42 @@
       };
     };
   };
+  programs.thunar = {
+    enable = true;
+  };
   programs.mtr.enable = true;
   programs.gnupg.agent = {
     enable = true;
     enableSSHSupport = true;
   };
 
+  xdg.menus.enable = true;
+  # Enable XDG Desktop Portals for Hyprland
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
+    config.common.default = "*";
+  };
+  
+  # Ensure system d-bus and XDG features integrate correctly
+  services.dbus.enable = true;
+
   environment.systemPackages = with pkgs; [
     kitty # required for default Hyprland config
+    bat
+    kdePackages.dolphin
+    kdePackages.kdegraphics-thumbnailers # For image thumbnails
+    kdePackages.qtwayland                # Wayland support for Qt apps
+    libsForQt5.qtstyleplugin-kvantum     # Optional: For styling Qt apps
   ];
+
+  environment.sessionVariables = {
+    # Tell Qt apps to use Wayland
+    QT_QPA_PLATFORM = "wayland;xcb";
+    
+    # Ensure Dolphin can find system icons
+    XDG_DATA_DIRS = [ "${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}" ];
+  };
 
   services.displayManager.ly.enable = true;
   services.xserver = {
