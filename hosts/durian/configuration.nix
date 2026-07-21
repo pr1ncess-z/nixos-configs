@@ -47,15 +47,33 @@
   hardware = {
     graphics.enable = true;
     nvidia = {
-      package = pkgs.nvidia_cachyos;
-      open = true;
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
+      open = false;
+      modesetting.enable = true;
+      nvidiaSettings = true;
+      powerManagement.enable = true;
+      prime = {
+        sync.enable = true;
+        
+        intelBusId = "PCI:0@0:2:0";
+        nvidiaBusId = "PCI:1@0:0:0";
+      };
     };
+
+    bluetooth.enable = true;
   };
 
   cachyos.settings = {
     enable = true;
     nvidia.enable = true;
   };
+
+  fileSystems."/mnt/data" = {
+    device = "/dev/disk/by-uuid/85977e05-842d-4be8-90ae-3280be6b242d";
+    fsType = "ext4";
+    options = [ "rw" "suid" "dev" "exec" "auto" "nouser" "async" ] ;
+  };
+
 
   programs.vim = {
     enable = true;
@@ -84,6 +102,7 @@
       };
     };
   };
+  programs.steam.enable = true;
   programs.thunar = {
     enable = true;
   };
@@ -97,16 +116,24 @@
   # Enable XDG Desktop Portals for Hyprland
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
+    extraPortals = [ 
+      pkgs.xdg-desktop-portal-hyprland 
+      pkgs.xdg-desktop-portal-gtk
+      pkgs.kdePackages.xdg-desktop-portal-kde
+    ];
     config.common.default = "*";
   };
   
   # Ensure system d-bus and XDG features integrate correctly
   services.dbus.enable = true;
+  services.udisks2.enable = true;
+
 
   environment.systemPackages = with pkgs; [
     kitty # required for default Hyprland config
     bat
+    xdg-user-dirs
+    wlsunset
     kdePackages.dolphin
     kdePackages.kdegraphics-thumbnailers # For image thumbnails
     kdePackages.qtwayland                # Wayland support for Qt apps
@@ -140,6 +167,7 @@
   security.polkit.enable = true;
 
   fonts.packages = with pkgs; [
+    liberation_ttf
     nerd-fonts.blex-mono
     nerd-fonts.geist-mono
     nerd-fonts.fira-code
@@ -150,6 +178,49 @@
     open-fonts
     font-adobe-100dpi
   ];
+  fonts.fontconfig = {
+    subpixel.rgba = "rgb";
+    cache32Bit = true;
+    defaultFonts = {
+      sansSerif = [ "Liberation Sans" "Noto Sans" "Noto Sans CJK KR" ];
+      serif = [ "Liberation Serif" "Noto Serif" ];
+      monospace = [ "FiraCode Nerd Font" "Noto Sans Mono" ];
+    };
+  };
+  fonts.fontconfig.localConf = ''
+    <?xml version="1.0"?>
+    <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+    <fontconfig>
+      <alias>
+        <family>Segoe UI</family>
+        <prefer>
+          <family>Liberation Sans</family>
+          <family>Noto Sans</family>
+        </prefer>
+      </alias>
+      <alias>
+        <family>system-ui</family>
+        <prefer>
+          <family>Liberation Sans</family>
+          <family>Noto Sans</family>
+        </prefer>
+      </alias>
+      <alias>
+        <family>-apple-system</family>
+        <prefer>
+          <family>Liberation Sans</family>
+          <family>Noto Sans</family>
+        </prefer>
+      </alias>
+      <alias>
+        <family>BlinkMacSystemFont</family>
+        <prefer>
+          <family>Liberation Sans</family>
+          <family>Noto Sans</family>
+        </prefer>
+      </alias>
+    </fontconfig>
+  '';
 
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];

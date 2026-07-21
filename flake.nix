@@ -5,7 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
-    dolphin-overlay.url = "git+file:///home/will/workspace/dolphin-overlay";
+    # dolphin-overlay.url = "git+file:///home/will/workspace/dolphin-overlay";
 
     cachyos-settings = {
     	url = "github:Daaboulex/cachyos-settings-nix";
@@ -18,7 +18,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, chaotic, nix-cachyos-kernel, dolphin-overlay, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, chaotic, nix-cachyos-kernel, ... }@inputs:
   {
     nixosConfigurations.nixos-durian = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
@@ -37,7 +37,7 @@
 
                 # Only use one of the two overlays!
 
-                dolphin-overlay.overlays.default
+                # dolphin-overlay.overlays.default
               ];
             }
         )

@@ -42,6 +42,17 @@
     firefox = {
       enable = true;
     };
+    mangohud = {
+      enable = true;
+      enableSessionWide = true; # Injects the necessary environment variables
+      settings = {
+        full = true;
+        fps_limit = [ 60 120 144 ];
+        hud_compact = true;
+        cpu_temp = true;
+        gpu_temp = true;
+      };
+    };
   };
 
   services = {
@@ -56,6 +67,7 @@
     };
     cliphist = {
       enable = true;
+      clipboardPackage = pkgs.wl-clipboard;
     };
   };
 }
