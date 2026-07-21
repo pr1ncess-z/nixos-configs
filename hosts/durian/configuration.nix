@@ -134,6 +134,7 @@
     bat
     xdg-user-dirs
     wlsunset
+    gh
     kdePackages.dolphin
     kdePackages.kdegraphics-thumbnailers # For image thumbnails
     kdePackages.qtwayland                # Wayland support for Qt apps
