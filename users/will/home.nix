@@ -19,6 +19,21 @@
     userName = "Will Zhou";
     userEmail = "smithy@pr1ncess.net";
   };
+
+  programs.gh = {
+    enable = true;
+    extensions = [
+      pkgs.gh-dash
+      pkgs.gh-eco
+    ];
+    
+    settings = {
+      git_protocol = "https";
+      prompt = "enabled";
+    };
+
+    gitCredentialHelper.enable = true;
+  };
   
   programs.zsh = {
     enable= true;
