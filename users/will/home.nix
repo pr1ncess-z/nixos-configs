@@ -1,15 +1,15 @@
-{pkgs, ...}: {
+{pkgs, inputs, lib, ...}: {
   imports = [
     ../../home/core.nix
   ];
 
-  # home.file.".vim/colors/badwolf.vim".source = /home/will/workspace/badwolf/colors/badwolf.vim;
-  # home.file.".vimrc".source = /home/will/workspace/dotconfigs/.vimrc;
+  # home.file.".vim/colors/badwolf.vim".source = ./config/vim/colors/badwolf.vim;
+  # home.file.".vimrc".source = ./config/vim/vimrc;
   # home.file.".config/hypr/hyprland.lua".source = ../../hosts/durian/config/hypr/hyprland.lua;
 
-  home.packages = with pkgs; [
-    vimPlugins.vim-pathogen
-  ];
+  # home.packages = with pkgs; [
+  #   vimPlugins.vim-pathogen
+  # ];
 
   home.username = "will";
   home.homeDirectory = "/home/will";
@@ -18,5 +18,60 @@
     enable = true;
     userName = "Will Zhou";
     userEmail = "smithy@pr1ncess.net";
+  };
+  
+  programs.zsh = {
+    enable= true;
+    enableCompletion = true;
+    autocd = true;
+    defaultKeymap = "emacs";
+
+    initContent = ''
+      zmodload zsh/datetime
+      
+      function chpwd() {
+        emulate -L zsh
+        ls -a
+      }
+
+      git_prompt() {
+        git rev-parse --is-inside-work-tree >/dev/null 2>&1 || return
+    
+        local branch staged unstaged untracked out
+    
+        branch=$(git branch --show-current 2>/dev/null)
+    
+        staged=$(git diff --cached --name-only 2>/dev/null | wc -l)
+        unstaged=$(git diff --name-only 2>/dev/null | wc -l)
+        untracked=$(git ls-files --others --exclude-standard 2>/dev/null | wc -l)
+    
+        out="%F{214}[$branch"
+    
+        (( staged )) && out+=" %F{108}+$staged%f"
+        (( unstaged )) && out+=" %F{167}-$unstaged%f"
+        (( untracked )) && out+=" %F{208}?$untracked%f"
+    
+        out+="]"
+    
+        printf "%s" "$out"
+      }
+    
+      RPROMPT="%T"
+
+      setopt prompt_subst
+    
+      PROMPT='%F{108}%n%f:%F{214}%~ %f$(git_prompt)%(!.%F{167}#%f.%F{108}$%f) '
+    '';
+
+    plugins = [
+      {
+        name = "zsh-autosuggestions";
+        src = "${inputs.plugin-zsh-autosuggestions}";
+      }
+      {
+        name = "zsh-syntax-highlighting";
+        src = "${inputs.plugin-zsh-syntax-highlighting}";
+      }
+    ];
   };
 }

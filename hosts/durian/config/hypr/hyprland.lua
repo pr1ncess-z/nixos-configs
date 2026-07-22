@@ -1,3 +1,4 @@
+--
 -- ~/.config/hypr/hyprland.lua (bare metal)
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = "auto" })
 
@@ -30,7 +31,6 @@ hl.config({
   animations = { enabled = false },
   render = {
     direct_scanout = true,        -- ← ENABLE lower latency
-    vrr = true,                   -- ← ENABLE if you have FreeSync/G-Sync
   },
 })
 

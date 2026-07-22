@@ -5,16 +5,29 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
-    # dolphin-overlay.url = "git+file:///home/will/workspace/dolphin-overlay";
+    
+    noctalia = {
+      url = "github:noctalia-dev/noctalia/cachix";
+    };
 
     cachyos-settings = {
-    	url = "github:Daaboulex/cachyos-settings-nix";
-    	inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:Daaboulex/cachyos-settings-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    /*-- zsh --*/
+    plugin-zsh-autosuggestions = {
+      url = "github:zsh-users/zsh-autosuggestions";
+      flake = false;
+    };
+    plugin-zsh-syntax-highlighting = {
+      url = "github:zsh-users/zsh-syntax-highlighting";
+      flake = false;
     };
   };
 
@@ -69,16 +82,18 @@
       "https://chaotic-nyx.cachix.org"
       "https://nix-community.cachix.org"
       "https://yazi.cachix.org"
-	    "https://hyprland.cachix.org"
+      "https://hyprland.cachix.org"
       "https://attic.xuyh0120.win/lantian"
+      "https://noctalia.cachix.org"
     ];
     extra-trusted-public-keys = [
       "nyx-cache.chaotic.cx:dJxTrgMC3V3cFfyIiBQDQorG6k1LsqurH/srpMSq7qk="
       "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "yazi.cachix.org-1:Dcdz63NZKfvUCbDGngQDAZq6kOroIrFoyO064uvLh8k="
-	    "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc="
+      "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
     ];
   };
 }

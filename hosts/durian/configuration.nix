@@ -6,6 +6,7 @@
   imports =
     [
       ./hardware-configuration.nix
+      inputs.noctalia.nixosModules.default
     ];
 
   boot.loader = {
@@ -35,6 +36,7 @@
   networking.hostName = "nixos-durian";
   networking.networkmanager.enable = true;
   networking.firewall.enable = true;
+  networking.firewall.checkReversePath = "loose";
 
   time.timeZone = "America/New_York";
 
@@ -79,7 +81,21 @@
     enable = true;
     defaultEditor = true;  
   };
+  programs.noctalia = {
+    enable = true;
+    recommendedServices.enable = true;
+    systemd.enable = true;
+  };
+  programs.zsh = {
+    enable = true;
+    enableBashCompletion = true;
+    histSize = 1000000;
+    syntaxHighlighting.enable = true;
+  };
   programs.git = {
+    enable = true;
+  };
+  programs.neovim = {
     enable = true;
   };
   programs.hyprland = {
@@ -127,19 +143,29 @@
   # Ensure system d-bus and XDG features integrate correctly
   services.dbus.enable = true;
   services.udisks2.enable = true;
-
+  services.tailscale = {
+    enable = true;
+  };
+  services.resolved.enable = true;
 
   environment.systemPackages = with pkgs; [
     kitty # required for default Hyprland config
+    alacritty
     bat
     xdg-user-dirs
     wlsunset
     gh
+    discord
+    tailscale-systray
+    cifs-utils
+    inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default
     kdePackages.dolphin
     kdePackages.kdegraphics-thumbnailers # For image thumbnails
     kdePackages.qtwayland                # Wayland support for Qt apps
     libsForQt5.qtstyleplugin-kvantum     # Optional: For styling Qt apps
   ];
+  users.defaultUserShell = pkgs.zsh;
+  environment.shells = with pkgs; [ zsh ];
 
   environment.sessionVariables = {
     # Tell Qt apps to use Wayland
@@ -156,7 +182,18 @@
         "nvidia" 
       ];
   };
-  services.openssh.enable = true;
+  services.openssh = {
+    enable = true;  
+    openFirewall = true;
+    settings = {
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
+      PermitRootLogin = "no";
+      AllowUsers = [ "will" ];
+      MaxAuthTries = 3;
+      PerSourcePenalties = "crash:3600s authfail:3600s max:86400s";
+    };
+  };
   services.printing.enable = true;
   services.pipewire = {
     enable = true;
