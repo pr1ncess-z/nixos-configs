@@ -173,6 +173,8 @@
     
     # Ensure Dolphin can find system icons
     XDG_DATA_DIRS = [ "${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}" ];
+
+    FONTCONFIG_FILE = "/etc/fonts/fonts.conf";
   };
 
   services.displayManager.ly.enable = true;
@@ -214,21 +216,41 @@
     noto-fonts-color-emoji
     ucs-fonts
     open-fonts
-    font-adobe-100dpi
   ];
+  fonts.enableDefaultPackages = true;
+  
   fonts.fontconfig = {
+    enable = true;
+    antialias = true;
     subpixel.rgba = "rgb";
+    subpixel.lcdfilter = "default";
     cache32Bit = true;
+    useEmbeddedBitmaps = true;
+    hinting = {
+      enable = true;
+      style = "slight";
+      autohint = true;
+    };
     defaultFonts = {
-      sansSerif = [ "Liberation Sans" "Noto Sans" "Noto Sans CJK KR" ];
-      serif = [ "Liberation Serif" "Noto Serif" ];
+      sansSerif = [ "Noto Sans" ];
+      serif = [ "Noto Serif" ];
       monospace = [ "FiraCode Nerd Font" "Noto Sans Mono" ];
+      emoji     = [ "Noto Color Emoji" ];
     };
   };
   fonts.fontconfig.localConf = ''
     <?xml version="1.0"?>
     <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
     <fontconfig>
+      <dir>/home/will/local/share/fonts</dir>
+      <match target="pattern">
+        <test name="family">
+          <string>system-ui</string>
+        </test>
+        <edit name="family" mode="prepend" binding="strong">
+          <string>sans-serif</string>
+        </edit>
+      </match>
       <alias>
         <family>Segoe UI</family>
         <prefer>
