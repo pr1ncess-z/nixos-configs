@@ -5,6 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
+    pi.url = "github:lukasl-dev/pi.nix";
     
     noctalia = {
       url = "github:noctalia-dev/noctalia/cachix";
@@ -32,13 +33,16 @@
   };
 
   outputs = { self, nixpkgs, home-manager, chaotic, nix-cachyos-kernel, ... }@inputs:
+  let
+    system = "x86_64-linux";
+  in
   {
     nixosConfigurations.nixos-durian = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
+      inherit system;
       specialArgs = { inherit inputs; }; # This passes `inputs` to configuration.nix
       modules = [
         (
-          { pkgs, ... }:
+          { pkgs, inputs, ... }:
             {
               nixpkgs.overlays = [
                 # Use the exact nixpkgs revision as defined in this repo to ensure binary cache hits.
@@ -51,6 +55,7 @@
                 # Only use one of the two overlays!
 
                 # dolphin-overlay.overlays.default
+                inputs.pi.overlays.default
               ];
             }
         )
@@ -85,6 +90,7 @@
       "https://hyprland.cachix.org"
       "https://attic.xuyh0120.win/lantian"
       "https://noctalia.cachix.org"
+      "https://pi.cachix.org"
     ];
     extra-trusted-public-keys = [
       "nyx-cache.chaotic.cx:dJxTrgMC3V3cFfyIiBQDQorG6k1LsqurH/srpMSq7qk="
@@ -94,6 +100,7 @@
       "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc="
       "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
+      "pi.cachix.org-1:lGeoGJaZ5ZDabuRzkcD5EBTNnDM4HJ1vqeOxlWk1Flk="
     ];
   };
 }

@@ -176,6 +176,7 @@
     gh
     discord
     cifs-utils
+    pi-coding-agent
     inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default
     kdePackages.dolphin
     kdePackages.kdegraphics-thumbnailers # For image thumbnails
