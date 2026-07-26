@@ -16,8 +16,10 @@
 
   programs.git = {
     enable = true;
-    userName = "Will Zhou";
-    userEmail = "smithy@pr1ncess.net";
+    settings = {
+       user.name = "Will Zhou";
+       user.email = "smithy@pr1ncess.net";
+    };
   };
 
   programs.gh = {
