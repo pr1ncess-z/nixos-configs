@@ -1,6 +1,7 @@
 {pkgs, inputs, lib, ...}: {
   imports = [
     ../../home/core.nix
+    # inputs.ssbm-nix.homeManagerModule
   ];
 
   # home.file.".vim/colors/badwolf.vim".source = ./config/vim/colors/badwolf.vim;
@@ -36,6 +37,11 @@
 
     gitCredentialHelper.enable = true;
   };
+
+  # ssbm.slippi-launcher = {
+  #   enable = true;
+  #   isoPath = "/home/will/Games/SSBM.iso"; # Replace with your actual path
+  # }; 
   
   programs.zsh = {
     enable= true;
@@ -45,6 +51,9 @@
 
     initContent = ''
       zmodload zsh/datetime
+
+      bindkey "\e[1;3D" backward-word
+      bindkey "\e[1;3C" forward-word
       
       function chpwd() {
         emulate -L zsh

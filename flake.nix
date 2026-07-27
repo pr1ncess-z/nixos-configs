@@ -6,6 +6,8 @@
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
     pi.url = "github:lukasl-dev/pi.nix";
+    nix-alien.url = "github:thiagokokada/nix-alien";
+    ssbm-nix.url = "github:djanatyn/ssbm-nix";
     
     noctalia = {
       url = "github:noctalia-dev/noctalia/cachix";
@@ -56,6 +58,14 @@
 
                 # dolphin-overlay.overlays.default
                 inputs.pi.overlays.default
+
+                inputs.nix-alien.overlays.default
+                # (final: prev: {
+                #   mbedtls_2 = final.mbedtls;
+                #   webkitgtk = final.webkitgtk_4_1;
+                #   wrapGAppsHook = final.wrapGAppsHook3;
+                # }) 
+                # inputs.ssbm-nix.overlay
               ];
             }
         )

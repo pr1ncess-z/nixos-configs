@@ -7,6 +7,7 @@
     [
       ./hardware-configuration.nix
       inputs.noctalia.nixosModules.default
+      # inputs.ssbm-nix.nixosModule
     ];
 
   boot.loader = {
@@ -83,10 +84,27 @@
   };
 
 
+  # 3. Optional: Enable the GameCube controller adapter overclock kernel module
+  # ssbm.cache.enable = true;
+  # ssbm.gcc.oc-kmod.enable = true; 
   programs.vim = {
     enable = true;
     defaultEditor = true;  
   };
+  programs.appimage.enable = true;
+  programs.appimage.binfmt = true;
+  # programs.appimage.package = pkgs.appimage-run.override 
+  #   {
+  #     extraPkgs = pkgs: 
+  #     [
+  #       pkgs.icu
+  #       pkgs.libxcrypt-legacy
+  #       pkgs.python312
+  #       pkgs.python312Packages.torch
+  #     ]; 
+  #   };
+
+  programs.nix-ld.enable = true;
   programs.noctalia = {
     enable = true;
     recommendedServices.enable = true;
@@ -109,21 +127,21 @@
     withUWSM = true;
     xwayland.enable = true;
   };
-  programs.uwsm = {
-    enable = true;
-    waylandCompositors = {
-      hyprland = {
-        prettyName = "hyprland";
-        comment = "hyprland on UWSM";
-        binPath = "/run/current-system/sw/bin/Hyprland";
-      };
-      mango = {
-        prettyName = "mango";
-        comment = "mango on UWSM";
-        binPath = "/run/current-system/sw/bin/mango";
-      };
-    };
-  };
+  # programs.uwsm = {
+  #   enable = true;
+  #   waylandCompositors = {
+  #     hyprland = {
+  #       prettyName = "hyprland";
+  #       comment = "hyprland on UWSM";
+  #       binPath = "/run/current-system/sw/bin/Hyprland";
+  #     };
+  #     mango = {
+  #       prettyName = "mango";
+  #       comment = "mango on UWSM";
+  #       binPath = "/run/current-system/sw/bin/mango";
+  #     };
+  #   };
+  # };
   programs.steam.enable = true;
   programs.thunar = {
     enable = true;
@@ -171,14 +189,20 @@
     ripgrep
     alacritty
     bat
+    steam-run
     xdg-user-dirs
     wlsunset
     gh
     discord
     cifs-utils
+    nix-alien
+    altus
+    bun
+    nodejs
     pi-coding-agent
     inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default
     kdePackages.dolphin
+    kdePackages.okular
     kdePackages.kdegraphics-thumbnailers # For image thumbnails
     kdePackages.qtwayland                # Wayland support for Qt apps
     libsForQt5.qtstyleplugin-kvantum     # Optional: For styling Qt apps
@@ -207,11 +231,11 @@
     enable = true;  
     openFirewall = true;
     settings = {
-      PasswordAuthentication = false;
-      KbdInteractiveAuthentication = false;
+      PasswordAuthentication = true;
+      KbdInteractiveAuthentication = true;
       PermitRootLogin = "no";
       AllowUsers = [ "will" ];
-      MaxAuthTries = 3;
+      MaxAuthTries = 9;
       PerSourcePenalties = "crash:3600s authfail:3600s max:86400s";
     };
   };
@@ -222,6 +246,9 @@
     alsa.support32Bit = true;
     pulse.enable = true;
   };
+  services.udev.extraRules = ''
+    SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", TAG+="uaccess" 
+  '';
 
   security.polkit.enable = true;
 
