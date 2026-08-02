@@ -28,8 +28,4 @@
 
   # ── Gaming packages ──
   hardware.graphics.enable32Bit = true;
-  # programs.steam.enable = true;
-
-  # ── CachyOS system tuning (replaces manual sysctls, governor, etc.) ──
-  # Enabled in configuration.nix: cachyos.settings.enable = true;
 }

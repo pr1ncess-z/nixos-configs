@@ -7,8 +7,6 @@
     [
       ./hardware-configuration.nix
       inputs.noctalia.nixosModules.default
-      inputs.nixvim.nixosModules.nixvim
-      # inputs.ssbm-nix.nixosModule
     ];
 
   boot.loader = {
@@ -77,21 +75,21 @@
       enable = true;
       powerOnBoot = true;
       settings = {
-	General = {
-	  # Shows battery charge of connected devices on supported
-	  # Bluetooth adapters. Defaults to 'false'.
-	  Experimental = true;
-	  # When enabled other devices can connect faster to us, however
-	  # the tradeoff is increased power consumption. Defaults to
-	  # 'false'.
-	  FastConnectable = true;
-	};
-	Policy = {
-	  # Enable all controllers when they are found. This includes
-	  # adapters present on start as well as adapters that are plugged
-	  # in later on. Defaults to 'true'.
-	  AutoEnable = true;
-	};
+        General = {
+      	  # Shows battery charge of connected devices on supported
+      	  # Bluetooth adapters. Defaults to 'false'.
+      	  Experimental = true;
+      	  # When enabled other devices can connect faster to us, however
+      	  # the tradeoff is increased power consumption. Defaults to
+      	  # 'false'.
+      	  FastConnectable = true;
+      	};
+      	Policy = {
+      	  # Enable all controllers when they are found. This includes
+      	  # adapters present on start as well as adapters that are plugged
+      	  # in later on. Defaults to 'true'.
+      	  AutoEnable = true;
+      	};
       };
     };
 
@@ -120,14 +118,8 @@
   programs.vim = {
     enable = true;
   };
-  programs.labwc = {
-    enable = true;
-  };
-  # programs.wayfire = {
+  # programs.labwc = {
   #   enable = true;
-  #   plugins = with pkgs.wayfirePlugins; [
-  #     wcm
-  #   ];
   # };
   programs.appimage.enable = true;
   programs.appimage.binfmt = true;
@@ -149,14 +141,6 @@
   programs.git = {
     enable = true;
   };
-  # programs.nixvim = {
-  #   enable = true;
-
-  #   colorschemes.gruvbox.enable = true;
-  #   plugins.lualine.enable = true;
-  #   plugins.lspconfig.enable = true;
-  #   plugins.treesitter.enable = true;
-  # };
   programs.neovim = {
     enable = true;
     defaultEditor = true;
@@ -167,9 +151,6 @@
     xwayland.enable = true;
   };
   programs.steam.enable = true;
-  programs.thunar = {
-    enable = true;
-  };
   programs.mtr.enable = true;
   programs.gnupg.agent = {
     enable = true;
@@ -202,7 +183,6 @@
     displayManager.ly.enable = true;
     displayManager.sessionPackages = [ 
       pkgs.labwc 
-      # pkgs.wayfire
     ];
     # displayManager.sddm.enable = true;
     # displayManager.sddm.wayland.enable = true;
@@ -221,8 +201,7 @@
 
   environment.systemPackages = with pkgs; [
     kitty # required for default Hyprland config
-
-    
+ 
     grim slurp hyprpicker wl-clipboard tesseract imagemagick zbar curl
     translate-shell wl-screenrec ffmpeg gifski jq
     python3 python314Packages.pygobject3 xdg-desktop-portal
@@ -240,19 +219,23 @@
     gh
     discord
     cifs-utils
-    nix-alien
+    # nix-alien
     altus
     bun
     nodejs
     helix
+    lutris
     pi-coding-agent
     wezterm
     ungoogled-chromium
     onlyoffice-desktopeditors
     nixd
     lua-language-server
+    diskonaut-ng
+    gdmap
     kdePackages.breeze-icons
     kdePackages.oxygen-icons
+    kdePackages.filelight
     kdePackages.dolphin
     kdePackages.okular
     kdePackages.kdegraphics-thumbnailers # For image thumbnails
