@@ -47,15 +47,11 @@
     hyprpaper = {
       enable = true;
     };
-    hypridle = {
-      enable = true;
-    };
+    # hypridle = {
+    #   enable = true;
+    # };
     hyprpolkitagent = {
       enable = true;
-    };
-    cliphist = {
-      enable = true;
-      clipboardPackage = pkgs.wl-clipboard;
     };
   };
 }

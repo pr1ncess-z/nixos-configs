@@ -9,6 +9,10 @@
     nix-alien.url = "github:thiagokokada/nix-alien";
     ssbm-nix.url = "github:djanatyn/ssbm-nix";
     
+    nixvim = {
+     url = "github:nix-community/nixvim";
+    };
+
     noctalia = {
       url = "github:noctalia-dev/noctalia/cachix";
     };

@@ -43,6 +43,29 @@
   #   isoPath = "/home/will/Games/SSBM.iso"; # Replace with your actual path
   # }; 
   
+  programs.neovim = {
+    enable = true;
+    defaultEditor = true;
+    vimAlias = true;
+    plugins = with pkgs.vimPlugins; [
+      nvim-treesitter.withAllGrammars
+      telescope-nvim
+      lualine-nvim
+      nvim-lspconfig
+      nvim-cmp
+      cmp-nvim-lsp
+      cmp-buffer
+      cmp-path
+      luasnip
+      cmp_luasnip
+    ];
+    extraConfig = ''
+      lua << EOF
+      ${builtins.readFile ./config/nvim/init.lua}
+      EOF
+    '';
+  };
+
   programs.zsh = {
     enable= true;
     enableCompletion = true;

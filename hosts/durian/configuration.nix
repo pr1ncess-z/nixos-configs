@@ -7,6 +7,7 @@
     [
       ./hardware-configuration.nix
       inputs.noctalia.nixosModules.default
+      inputs.nixvim.nixosModules.nixvim
       # inputs.ssbm-nix.nixosModule
     ];
 
@@ -33,6 +34,7 @@
           '';
       };
   };
+  boot.supportedFilesystems = [ "nfs" ];
 
   networking.hostName = "nixos-durian";
   networking.networkmanager.enable = true;
@@ -53,6 +55,8 @@
   }]; 
   zramSwap.enable = true;
 
+  services.power-profiles-daemon.enable = false;
+  powerManagement.cpuFreqGovernor = "performance";
   hardware = {
     graphics.enable = true;
     nvidia = {
@@ -69,7 +73,28 @@
       };
     };
 
-    bluetooth.enable = true;
+    bluetooth = {
+      enable = true;
+      powerOnBoot = true;
+      settings = {
+	General = {
+	  # Shows battery charge of connected devices on supported
+	  # Bluetooth adapters. Defaults to 'false'.
+	  Experimental = true;
+	  # When enabled other devices can connect faster to us, however
+	  # the tradeoff is increased power consumption. Defaults to
+	  # 'false'.
+	  FastConnectable = true;
+	};
+	Policy = {
+	  # Enable all controllers when they are found. This includes
+	  # adapters present on start as well as adapters that are plugged
+	  # in later on. Defaults to 'true'.
+	  AutoEnable = true;
+	};
+      };
+    };
+
   };
 
   cachyos.settings = {
@@ -80,7 +105,12 @@
   fileSystems."/mnt/data" = {
     device = "/dev/disk/by-uuid/85977e05-842d-4be8-90ae-3280be6b242d";
     fsType = "ext4";
-    options = [ "rw" "suid" "dev" "exec" "auto" "nouser" "async" ] ;
+    options = [ "rw" "suid" "dev" "exec" "auto" "nouser" "async" ];
+  };
+  fileSystems."/mnt/vault" = {
+    device = "192.168.50.249:/Vault";
+    fsType = "nfs4";
+    options = [ "x-systemd.automount" "noauto" ];
   };
 
 
@@ -89,20 +119,19 @@
   # ssbm.gcc.oc-kmod.enable = true; 
   programs.vim = {
     enable = true;
-    defaultEditor = true;  
   };
+  programs.labwc = {
+    enable = true;
+  };
+  # programs.wayfire = {
+  #   enable = true;
+  #   plugins = with pkgs.wayfirePlugins; [
+  #     wcm
+  #   ];
+  # };
   programs.appimage.enable = true;
   programs.appimage.binfmt = true;
-  # programs.appimage.package = pkgs.appimage-run.override 
-  #   {
-  #     extraPkgs = pkgs: 
-  #     [
-  #       pkgs.icu
-  #       pkgs.libxcrypt-legacy
-  #       pkgs.python312
-  #       pkgs.python312Packages.torch
-  #     ]; 
-  #   };
+  programs.thunderbird.enable = true;
 
   programs.nix-ld.enable = true;
   programs.noctalia = {
@@ -110,6 +139,7 @@
     recommendedServices.enable = true;
     systemd.enable = true;
   };
+  # programs.waybar.enable = true;
   programs.zsh = {
     enable = true;
     enableBashCompletion = true;
@@ -119,29 +149,23 @@
   programs.git = {
     enable = true;
   };
+  # programs.nixvim = {
+  #   enable = true;
+
+  #   colorschemes.gruvbox.enable = true;
+  #   plugins.lualine.enable = true;
+  #   plugins.lspconfig.enable = true;
+  #   plugins.treesitter.enable = true;
+  # };
   programs.neovim = {
     enable = true;
+    defaultEditor = true;
   };
   programs.hyprland = {
     enable = true;
     withUWSM = true;
     xwayland.enable = true;
   };
-  # programs.uwsm = {
-  #   enable = true;
-  #   waylandCompositors = {
-  #     hyprland = {
-  #       prettyName = "hyprland";
-  #       comment = "hyprland on UWSM";
-  #       binPath = "/run/current-system/sw/bin/Hyprland";
-  #     };
-  #     mango = {
-  #       prettyName = "mango";
-  #       comment = "mango on UWSM";
-  #       binPath = "/run/current-system/sw/bin/mango";
-  #     };
-  #   };
-  # };
   programs.steam.enable = true;
   programs.thunar = {
     enable = true;
@@ -151,6 +175,7 @@
     enable = true;
     enableSSHSupport = true;
   };
+  programs.dconf.enable = true;
 
   xdg.menus.enable = true;
   # Enable XDG Desktop Portals for Hyprland
@@ -172,6 +197,16 @@
     enable = true;
     authKeyFile = "/var/lib/tailscale-key";
   };
+  services = {
+    # desktopManager.plasma6.enable = true;
+    displayManager.ly.enable = true;
+    displayManager.sessionPackages = [ 
+      pkgs.labwc 
+      # pkgs.wayfire
+    ];
+    # displayManager.sddm.enable = true;
+    # displayManager.sddm.wayland.enable = true;
+  };
 
   # 2. Force tailscaled to use nftables (Critical for clean nftables-only systems)
   # This avoids the "iptables-compat" translation layer issues.
@@ -186,6 +221,16 @@
 
   environment.systemPackages = with pkgs; [
     kitty # required for default Hyprland config
+
+    
+    grim slurp hyprpicker wl-clipboard tesseract imagemagick zbar curl
+    translate-shell wl-screenrec ffmpeg gifski jq
+    python3 python314Packages.pygobject3 xdg-desktop-portal
+    flameshot
+    luaPackages.tree-sitter-cli
+    ddcutil
+    labwc-tweaks
+    labwc-menu-generator
     ripgrep
     alacritty
     bat
@@ -199,14 +244,47 @@
     altus
     bun
     nodejs
+    helix
     pi-coding-agent
-    inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default
+    wezterm
+    ungoogled-chromium
+    onlyoffice-desktopeditors
+    nixd
+    lua-language-server
+    kdePackages.breeze-icons
+    kdePackages.oxygen-icons
     kdePackages.dolphin
     kdePackages.okular
     kdePackages.kdegraphics-thumbnailers # For image thumbnails
     kdePackages.qtwayland                # Wayland support for Qt apps
+    # kdePackages.kcalc # Calculator
+    # kdePackages.kcharselect # Character map
+    # kdePackages.kclock # Clock app
+    # kdePackages.kcolorchooser # Color picker
+    # kdePackages.kolourpaint # Simple paint program
+    # kdePackages.ksystemlog # System log viewer
+    # kdePackages.sddm-kcm # SDDM configuration module
+    # kdiff3 # File/directory comparison tool
     libsForQt5.qtstyleplugin-kvantum     # Optional: For styling Qt apps
+    # qt6Packages.qtstyleplugin-kvantum
+    # kdePackages.qtstyleplugin-kvantum
+    
+    hardinfo2
+    wl-clipboard
+    wayland-utils
+    vlc
   ];
+
+  # environment.plasma6.excludePackages = with pkgs; [
+  #   kdePackages.elisa # Music player
+  #   kdePackages.kdepim-runtime # Akonadi agents
+  #   kdePackages.kmahjongg
+  #   kdePackages.kmines
+  #   kdePackages.konversation # IRC client
+  #   kdePackages.kpat # Solitaire
+  #   kdePackages.ksudoku
+  #   kdePackages.ktorrent
+  # ];
   users.defaultUserShell = pkgs.zsh;
   environment.shells = with pkgs; [ zsh ];
 
@@ -220,7 +298,6 @@
     FONTCONFIG_FILE = "/etc/fonts/fonts.conf";
   };
 
-  services.displayManager.ly.enable = true;
   services.xserver = {
       videoDrivers = [ 
         "modesetting"
