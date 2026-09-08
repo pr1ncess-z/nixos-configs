@@ -6,8 +6,9 @@
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
     pi.url = "github:lukasl-dev/pi.nix";
-     # nix-alien.url = "github:thiagokokada/nix-alien";
-     # ssbm-nix.url = "github:djanatyn/ssbm-nix";
+
+    # hyprland.url = "github:hyprwm/Hyprland";
+    # hyprland-contrib.url = "github:hyprwm/contrib";
     
     noctalia = {
       url = "github:noctalia-dev/noctalia/cachix";
@@ -34,7 +35,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, chaotic, nix-cachyos-kernel, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, chaotic, nix-cachyos-kernel, ... } @ inputs:
   let
     system = "x86_64-linux";
   in
@@ -52,15 +53,12 @@
 
                 # Alternatively, use nixpkgs from your environment, nixpkgs.config will apply.
                 # Note: may not hit binary cache; kernel will need to be built locally.
+                # Only use one of the two overlays!
                 # nix-cachyos-kernel.overlays.default
 
-                # Only use one of the two overlays!
-
-                # dolphin-overlay.overlays.default
+                
                 inputs.pi.overlays.default
-
-                # inputs.nix-alien.overlays.default
-             ];
+              ];
             }
         )
 

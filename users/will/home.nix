@@ -51,6 +51,11 @@
       nvim-treesitter.withAllGrammars
       telescope-nvim
       lualine-nvim
+      plenary-nvim
+      nui-nvim
+      neo-tree-nvim
+      nvim-web-devicons
+      which-key-nvim
       nvim-lspconfig
       nvim-cmp
       cmp-nvim-lsp
@@ -72,15 +77,28 @@
     autocd = true;
     defaultKeymap = "emacs";
 
+    shellAliases = {
+      "ls" = "eza";
+      "l" = "eza";
+      "ll" = "eza -l";
+      "lrah" = "eza -lrah";
+      "f" = "fzf";
+      "efl" = "hx ~/workspace/nixos-configs/flake.nix";
+      "ecfg" = "hx ~/workspace/nixos-configs/hosts/durian/configuration.nix";
+      "ehome" = "hx ~/workspace/nixos-configs/users/will/home.nix";
+      "nrs" = "sudo nixos-rebuild switch --flake /home/will/workspace/nixos-configs#nixos-durian";
+      "c" = "clear";
+    };
+    
     initContent = ''
       zmodload zsh/datetime
 
       bindkey "\e[1;3D" backward-word
       bindkey "\e[1;3C" forward-word
-      
+
       function chpwd() {
         emulate -L zsh
-        ls -a
+        eza -lah
       }
 
       git_prompt() {

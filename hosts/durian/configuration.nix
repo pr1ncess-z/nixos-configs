@@ -33,6 +33,12 @@
       };
   };
   boot.supportedFilesystems = [ "nfs" ];
+  boot.extraModulePackages = [
+    config.boot.kernelPackages.gcadapter-oc-kmod
+  ];
+  boot.kernelModules = [
+    "gcadapter_oc"
+  ];
 
   networking.hostName = "nixos-durian";
   networking.networkmanager.enable = true;
@@ -71,6 +77,8 @@
       };
     };
 
+    logitech.wireless.enable = true;
+
     bluetooth = {
       enable = true;
       powerOnBoot = true;
@@ -94,6 +102,7 @@
     };
 
   };
+  hardware.wooting.enable = true;
 
   cachyos.settings = {
     enable = true;
@@ -111,6 +120,16 @@
     options = [ "x-systemd.automount" "noauto" ];
   };
 
+  i18n.inputMethod = {
+    enable = true;
+    type = "fcitx5";
+    fcitx5.addons = with pkgs; [
+      fcitx5-mozc
+      fcitx5-gtk
+    ];
+  };
+
+
 
   # 3. Optional: Enable the GameCube controller adapter overclock kernel module
   # ssbm.cache.enable = true;
@@ -118,9 +137,18 @@
   programs.vim = {
     enable = true;
   };
-  # programs.labwc = {
-  #   enable = true;
-  # };
+  programs.solaar = {
+    enable = true;
+    userService = {
+      enable = true;
+    };
+  };
+  programs.gamescope = {
+    enable = true;
+  };
+  programs.nushell = {
+    enable = true;
+  };
   programs.appimage.enable = true;
   programs.appimage.binfmt = true;
   programs.thunderbird.enable = true;
@@ -145,11 +173,6 @@
     enable = true;
     defaultEditor = true;
   };
-  programs.hyprland = {
-    enable = true;
-    withUWSM = true;
-    xwayland.enable = true;
-  };
   programs.steam.enable = true;
   programs.mtr.enable = true;
   programs.gnupg.agent = {
@@ -159,16 +182,6 @@
   programs.dconf.enable = true;
 
   xdg.menus.enable = true;
-  # Enable XDG Desktop Portals for Hyprland
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ 
-      pkgs.xdg-desktop-portal-hyprland 
-      pkgs.xdg-desktop-portal-gtk
-      pkgs.kdePackages.xdg-desktop-portal-kde
-    ];
-    config.common.default = "*";
-  };
   
   # Ensure system d-bus and XDG features integrate correctly
   services.dbus.enable = true;
@@ -178,16 +191,6 @@
     enable = true;
     authKeyFile = "/var/lib/tailscale-key";
   };
-  services = {
-    # desktopManager.plasma6.enable = true;
-    displayManager.ly.enable = true;
-    displayManager.sessionPackages = [ 
-      pkgs.labwc 
-    ];
-    # displayManager.sddm.enable = true;
-    # displayManager.sddm.wayland.enable = true;
-  };
-
   # 2. Force tailscaled to use nftables (Critical for clean nftables-only systems)
   # This avoids the "iptables-compat" translation layer issues.
   systemd.services.tailscaled.serviceConfig.Environment = [ 
@@ -200,26 +203,49 @@
   boot.initrd.systemd.network.wait-online.enable = false;
 
   environment.systemPackages = with pkgs; [
-    kitty # required for default Hyprland config
  
+    # TODO: Figure out what required this
     grim slurp hyprpicker wl-clipboard tesseract imagemagick zbar curl
     translate-shell wl-screenrec ffmpeg gifski jq
-    python3 python314Packages.pygobject3 xdg-desktop-portal
+    python3 python314Packages.pygobject3
+    p7zip
+    softmaker-office
+    bitwarden-cli
+    neomutt
+    ghostty
+    zoom-us
+    slack
+    libice
+    zellij
+    fzf
+    yazi
+    eza
+    jellyfin-desktop
+    obsidian
+    foliate
+    auto-cpufreq
+    dpkg
+    albert
+    wine
+    winetricks
+    winePackages.waylandFull
+    winePackages.full
+    wineWow64Packages.stableFull
+    # linuxKernel.packages.linux_7_1.gcadapter-oc-kmod
     flameshot
     luaPackages.tree-sitter-cli
     ddcutil
-    labwc-tweaks
-    labwc-menu-generator
+    qbittorrent
+    peazip
+    rar
     ripgrep
     alacritty
     bat
     steam-run
     xdg-user-dirs
-    wlsunset
     gh
     discord
     cifs-utils
-    # nix-alien
     altus
     bun
     nodejs
@@ -233,41 +259,21 @@
     lua-language-server
     diskonaut-ng
     gdmap
-    kdePackages.breeze-icons
-    kdePackages.oxygen-icons
-    kdePackages.filelight
-    kdePackages.dolphin
-    kdePackages.okular
-    kdePackages.kdegraphics-thumbnailers # For image thumbnails
-    kdePackages.qtwayland                # Wayland support for Qt apps
-    # kdePackages.kcalc # Calculator
-    # kdePackages.kcharselect # Character map
-    # kdePackages.kclock # Clock app
-    # kdePackages.kcolorchooser # Color picker
-    # kdePackages.kolourpaint # Simple paint program
-    # kdePackages.ksystemlog # System log viewer
-    # kdePackages.sddm-kcm # SDDM configuration module
-    # kdiff3 # File/directory comparison tool
-    libsForQt5.qtstyleplugin-kvantum     # Optional: For styling Qt apps
-    # qt6Packages.qtstyleplugin-kvantum
-    # kdePackages.qtstyleplugin-kvantum
-    
     hardinfo2
-    wl-clipboard
     wayland-utils
     vlc
   ];
 
-  # environment.plasma6.excludePackages = with pkgs; [
-  #   kdePackages.elisa # Music player
-  #   kdePackages.kdepim-runtime # Akonadi agents
-  #   kdePackages.kmahjongg
-  #   kdePackages.kmines
-  #   kdePackages.konversation # IRC client
-  #   kdePackages.kpat # Solitaire
-  #   kdePackages.ksudoku
-  #   kdePackages.ktorrent
-  # ];
+  environment.plasma6.excludePackages = with pkgs; [
+    kdePackages.elisa # Music player
+    kdePackages.kdepim-runtime # Akonadi agents
+    kdePackages.kmahjongg
+    kdePackages.kmines
+    kdePackages.konversation # IRC client
+    kdePackages.kpat # Solitaire
+    kdePackages.ksudoku
+    kdePackages.ktorrent
+  ];
   users.defaultUserShell = pkgs.zsh;
   environment.shells = with pkgs; [ zsh ];
 
@@ -287,6 +293,7 @@
         "nvidia" 
       ];
   };
+  services.auto-cpufreq.enable = true;
   services.openssh = {
     enable = true;  
     openFirewall = true;
@@ -296,15 +303,16 @@
       PermitRootLogin = "no";
       AllowUsers = [ "will" ];
       MaxAuthTries = 9;
-      PerSourcePenalties = "crash:3600s authfail:3600s max:86400s";
     };
   };
   services.printing.enable = true;
+  services.pulseaudio.enable = false;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+    jack.enable = true;
   };
   services.udev.extraRules = ''
     SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", TAG+="uaccess" 
@@ -319,7 +327,11 @@
     nerd-fonts.fira-code
     noto-fonts
     noto-fonts-cjk-sans
+    noto-fonts-cjk-serif
     noto-fonts-color-emoji
+    paratype-pt-sans
+    paratype-pt-serif
+    paratype-pt-mono
     ucs-fonts
     open-fonts
   ];
